@@ -17,6 +17,6 @@ def Parse(charname):
     fw.close()
 
 if __name__ == '__main__':
-    president = {'GeorgeBush', 'BarackObama', 'DonaldTrump'}
+    president = {'GeorgeBush', 'BarackObama', 'DonaldTrump', 'BernieSanders'}
     for people in president:
         Parse(people)

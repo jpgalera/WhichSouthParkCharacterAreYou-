@@ -6,6 +6,10 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 
 #TODO implement more features
+#TODO improve accuracy
+#TODO create markov based sentence generator
+#TODO test sentences against naive bayes classifier using features implemented
+#TODO FINISH VERSION2.O!!!!!!!!!!
 
 #####SETS OF VARIOUS IMPORTANT THINGS#####
 mainCharacters = {'Stan', 'Kyle', 'Cartman', 'Kenny', 'Butters', 'Wendy'
