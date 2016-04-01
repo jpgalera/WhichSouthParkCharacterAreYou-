@@ -16,5 +16,5 @@ How to run the program:<br />
                 python3 characters.py BarackObama
                 python3 characters.py GeorgeBush
 
-           The program will then compare the output numerical values with the values<br />
-           of each south park characters and will give you the result of the closest match.<br />
+  The program will then compare the output numerical values with the values<br />
+  of each south park characters and will give you the result of the closest match.<br />
