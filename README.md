@@ -1,8 +1,7 @@
 # WhichSouthParkCharacterAreYou-
 computational linguistics program matching text speeches given by presidential speeches with South Park Characters<br />
 
-#How to run the program:<br />
-  #Remember to change file directories accordingly<br />
+#How to run the program: Remember to change file directories accordingly<br />
   Step 1.) go to the directory the final Project folder is saved in.<br />
   Step 2.) Run runthisscript.txt by typing in the following<br />
           ie.   python3 runthisscript.txt
