@@ -4,7 +4,7 @@ from classifier import *
     Only run this file once to generate data of all the characters that were analyzed.
 '''
 mainCharacters = {'Stan', 'Kyle', 'Cartman', 'Kenny', 'Butters', 'Wendy'
-, 'Jimmy','Garrison', 'Mackey', 'Slave', 'Victoria', 'Ned','Mayor', 'Satan'}
+    , 'Jimmy','Garrison', 'Mackey'}
 
 def getAllCharacterAttributes():
     f = open('AllCharAttributes.txt','w+')
@@ -16,9 +16,9 @@ def getAllCharacterAttributes():
         # character name, egocentrism,unformality,alliterationLevel,anaphoraLevel,imperativeLevel
         + str(round((char.egocentrism/len(char.speech)),4)) + '\t | \t'
         + str(round((char.unformality/len(char.speech)),4)) + '\t | \t'
-        + str(round((char.alliterationLevel/len(char.speech)),4)) + '\t | \t'
-        + str(round((char.anaphoraLevel/len(char.speech)),4)) + '\t | \t'
-        + str(round((char.imperativeLevel/len(char.speech)),4)) + '\n')
+        + str(round((char.alliteration/len(char.speech)),4)) + '\t | \t'
+        + str(round((char.anaphora/len(char.speech)),4)) + '\t | \t'
+        + str(round((char.imperative/len(char.speech)),4)) + '\n')
 
 if __name__ == '__main__':
     getAllCharacterAttributes()

@@ -1,10 +1,9 @@
-import csv
-import sys
-import re
+import csv,re,nltk
+from nltk import *
 
 def ParseCSV(filename):
     mainCharacters = {'Stan', 'Kyle', 'Cartman', 'Kenny', 'Butters', 'Wendy'
-    , 'Jimmy','Garrison', 'Mackey', 'Slave', 'Victoria', 'Ned', 'Mayor', 'Satan'}
+    , 'Jimmy','Garrison', 'Mackey'}
 
 
     f = open(filename, 'rt')
@@ -17,18 +16,25 @@ def ParseCSV(filename):
                 wfall = open("char_scripts/allChars.txt", 'a+')
                 if character in mainCharacters:
                     wf = open("char_scripts/" + character +".txt", 'a+')
-                    if (row[3]) not in wf:
-                        wf.write(row[3])
-                        wf.close()
-                    wfall.write(character + '\t' + row[3])
+                    for sentence in sent_tokenize(row[3].strip('\n')):
+                        if sentence[-1] == '\n':
+                            wf.write(sentence + '\n')
+                            wfall.write(character + '\t' + sentence+ '\n')
+                        else:
+                            wf.write(sentence +'\n')
+                            wfall.write(character + '\t' + sentence +'\n')
                     wf.close()
                 else:
                     for c in mainCharacters:
                         if c in character:
                             wf = open("char_scripts/" + c +".txt", 'a+')
-                            if (row[3]) not in wf:
-                                wf.write(row[3])
-                            wfall.write(character + '\t' + row[3])
+                            for sentence in sent_tokenize(row[3].strip('\n')):
+                                if sentence[-1] == '\n':
+                                    wf.write(sentence + '\n')
+                                    wfall.write(c + '\t' + sentence +'\n')
+                                else:
+                                    wf.write(sentence +'\n')
+                                    wfall.write(c + '\t' + sentence +'\n')
                             wf.close()
                 wfall.close()
     finally:

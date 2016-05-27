@@ -1,19 +1,15 @@
 #!/usr/local/bin/python3
-import random,operator,os,sys,nltk
+import random,operator,os,sys,nltk,curses
 
 from nltk import *
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
-
-#TODO implement more features
-#TODO improve accuracy
-#TODO create markov based sentence generator
-#TODO test sentences against naive bayes classifier using features implemented
-#TODO FINISH VERSION2.O!!!!!!!!!!
+from curses.ascii import isdigit
+from nltk.corpus import cmudict
 
 #####SETS OF VARIOUS IMPORTANT THINGS#####
 mainCharacters = {'Stan', 'Kyle', 'Cartman', 'Kenny', 'Butters', 'Wendy'
-, 'Jimmy','Garrison', 'Mackey', 'Slave', 'Victoria', 'Ned', 'Mayor', 'Satan'}
+    , 'Jimmy','Garrison', 'Mackey'}
 
 verbList = {'agree','do','know','read','suggest','allow','eat','learn','remember',
 'take','answer','explain','leave','run','talk','ask','fall','like','say','tell','be',
@@ -29,12 +25,12 @@ conjunctionList = {'and','that','but','or','as','if','when','than','because','wh
 'after','so','though','since','until','whether','before','although','nor','like','once','unless'
 ,'now','except'}
 
+stopWords = set(stopwords.words('english'))
 
 egocentricWordList = {'i','me','my'}
 NonEgocentricWordList = {'we','us','our'}
-verbtags = {'VB','VBG','VBN','VBP','VBZ'}
 
-##########################################
+###################################################
 
 class Character:
 
@@ -51,11 +47,9 @@ class Character:
         self.speech = self.charfile.readlines()
         self.egocentrism = 0
         self.unformality = 0
-        self.alliterationLevel = 0
-        self.anaphoraLevel = 0
-        self.imperativeLevel = 0
-        self.affirmativeLevel = 0
-        self.negativeLevel = 0
+        self.alliteration = 0
+        self.anaphora = 0
+        self.imperative = 0
         self.charfile.close()
 
     def is_Egocentric(self,tokenized_sentence):
@@ -90,36 +84,20 @@ class Character:
         for i in range(len(tokenized_sentence)-1):
             if tokenized_sentence[i][0].lower() == tokenized_sentence[i+1][0].lower():
                 if tokenized_sentence[i].lower() == tokenized_sentence[i+1].lower():
-                    self.anaphoraLevel += 1
+                    self.anaphora += 1
                 else:
-                    self.alliterationLevel += 1
+                    self.alliteration += 1
 
-    def imperative_Level(self,tokenized_sentence):
+    def imperativeLevel(self,tokenized_sentence):
         '''
             analyze how imperative a character is
         '''
         bigrams = list(ngrams(tokenized_sentence,2))
         if bigrams.count(('have','to')) >= 1:
-            self.imperativeLevel += 1
+            self.imperative += 1
         for bigram in bigrams:
             if bigram[0] in verbList and bigram[1] in conjunctionList:
-                self.imperativeLevel += 1
-
-    def buzzwordsUse(self, tokenized_sentence):
-        pass
-
-    def affirmativity_Level(self, tokenized_sentence):
-        '''
-            How  often do the characters talk in an affirmative manner?
-        '''
-        pass
-
-
-    def negativity_Level(self,tokenized_sentence):
-        '''
-            How often does the character disgaree with something
-        '''
-        pass
+                self.imperative += 1
 
     def document_characteristics(self):
         '''
@@ -132,7 +110,7 @@ class Character:
             self.is_Egocentric(line_tokenized)
             self.is_Unformal(line_tokenized)
             self.AALevel(line_tokenized)
-            self.imperative_Level(line_tokenized)
+            self.imperativeLevel(line_tokenized)
 
 
 
@@ -143,9 +121,9 @@ if __name__ == '__main__':
     print ("Character:" + character.name)
     print ('Egocentric Level: ' + str(round((character.egocentrism/len(character.speech)),4)))
     print ('Unformality Level: ' + str(round((character.unformality/len(character.speech)),4)))
-    print ('Alliteration Level: ' + str(round((character.alliterationLevel/len(character.speech)),4)))
-    print ('Anaphora Level: ' + str(round((character.anaphoraLevel/len(character.speech)),4)))
-    print ('Imperative Level: ' + str(round((character.imperativeLevel/len(character.speech)),4)))
+    print ('Alliteration Level: ' + str(round((character.alliteration/len(character.speech)),4)))
+    print ('Anaphora Level: ' + str(round((character.anaphora/len(character.speech)),4)))
+    print ('Imperative Level: ' + str(round((character.imperative/len(character.speech)),4)))
 
     print('Comparing values with SouthPark characters')
     characterDict = {}
@@ -154,47 +132,28 @@ if __name__ == '__main__':
     #we put more values in egocentrism,unformality and imperativeness rather than alliteration and anaphora
     for line in lines:
         char,ego,unformality,alliteration,anaphora,imperative = line.split('\t | \t')
-        # DEBUG STATEMENTS:
-        # print(char,ego,unformality,alliteration,anaphora,imperative)
-        # print(abs(3*(float(ego) - round((character.egocentrism/len(character.speech)),4))))
-        # print(abs(2*(float(unformality) - round((character.unformality/len(character.speech)),4))))
-        # print(abs(float(alliteration) - round((character.alliterationLevel/len(character.speech)),4)))
-        # print(abs(float(anaphora) - round((character.anaphoraLevel/len(character.speech)),4)))
-        # print(abs(2*(float(imperative) - round((character.imperativeLevel/len(character.speech)),4))))
-        characterDict[char] = abs(3*(float(ego) -  round((character.egocentrism/len(character.speech)),4))) + abs(2*(float(unformality) - round((character.unformality/len(character.speech)),4))) + abs(float(alliteration) - round((character.alliterationLevel/len(character.speech)),4)) + abs(float(anaphora) - round((character.anaphoraLevel/len(character.speech)),4)) + abs(2*(float(imperative) - round((character.imperativeLevel/len(character.speech)),4)))
+        characterDict[char] = abs(3*(float(ego) -  round((character.egocentrism/len(character.speech)),4))) + abs(2*(float(unformality) - round((character.unformality/len(character.speech)),4))) + abs(float(alliteration) - round((character.alliteration/len(character.speech)),4)) + abs(float(anaphora) - round((character.anaphora/len(character.speech)),4)) + abs(2*(float(imperative) - round((character.imperative/len(character.speech)),4)))
     match = min(characterDict, key=characterDict.get)
     for key in sorted(characterDict, key=characterDict.get):
         print(key + ": " + str(characterDict[key]))
     print(charname + " matches " + match + ".")
-    print("Congratulations....You have just voted for " + match + '.')
 
     #image rendering
-    #TODO fix image rendering... remove plot graph styling
     from PIL import ImageTk
-    try:
-        # Python2
-        import Tkinter as tk
-    except ImportError:
-        # Python3
-        import tkinter as tk
+    import tkinter as tk
 
     root = tk.Tk()
     root.geometry("+{}+{}".format(100, 100))
     root.title("You have matched with " + match + '.')
 
-    # pick image files you have in your working directory
-    # or use full path
-    # PIL's ImageTk allows .gif  .jpg  .png  .bmp formats
     image1 = "images/"+ charname + ".png"
     image2 = "images/"+ match + ".png"
 
-    # PIL's ImageTk converts to an image object that Tkinter can handle
     photo1 = ImageTk.PhotoImage(file=image1)
     photo2 = ImageTk.PhotoImage(file=image2)
 
-    # put the image objects on labels in a grid layout
     tk.Label(root,image=photo1).grid(row=0, column=0)
     tk.Label(root,image=photo2).grid(row=0, column=1)
 
-    # execute the event loop
+
     root.mainloop()
